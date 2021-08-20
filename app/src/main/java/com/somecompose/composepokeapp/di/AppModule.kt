@@ -24,7 +24,7 @@ object AppModule {
     @Singleton
     @Provides
     fun providePokeApi(): PokeApi {
-        Retrofit.Builder()
+        return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
