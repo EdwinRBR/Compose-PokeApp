@@ -1,7 +1,8 @@
 package com.somecompose.composepokeapp.repository
 
 import com.somecompose.composepokeapp.data.PokeApi
-import com.somecompose.composepokeapp.data.response.PokeList
+import com.somecompose.composepokeapp.data.responses.PokeList
+import com.somecompose.composepokeapp.data.responses.Pokemon
 import com.somecompose.composepokeapp.util.Resource
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
