@@ -8,6 +8,7 @@ import com.somecompose.composepokeapp.repository.PokeRepository
 import com.somecompose.composepokeapp.util.Constants.PAGE_SIZE
 import com.somecompose.composepokeapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -24,8 +25,41 @@ class PokeListViewModel @Inject constructor(
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
 
+    // Backup data cache
+    private var cachedPokeList = listOf<PokeListEntry>()
+    private var isSearch = true
+    var isSearching = mutableStateOf(false)
+
     init {
         loadPokePaginated()
+    }
+
+    fun searchPokeList(query: String) {
+        val listToSearch = if (isSearch) {
+            pokeList.value
+        } else {
+            cachedPokeList
+        }
+        viewModelScope.launch(Dispatchers.Default) {
+            if (query.isEmpty()) {
+                // Reinitialize list
+                pokeList.value = cachedPokeList
+                isSearching.value = false
+                isSearch = true
+
+                return@launch
+            }
+            val results = listToSearch.filter {
+                it.pokeName.contains(query.trim(), ignoreCase = true) || it.number.toString() == query.trim()
+            }
+            if (isSearch) {
+                // Cache poke into CachePokeList
+                cachedPokeList = pokeList.value
+                isSearch = false
+            }
+            pokeList.value = results
+            isSearching.value = true
+        }
     }
 
     // Pagination Logic

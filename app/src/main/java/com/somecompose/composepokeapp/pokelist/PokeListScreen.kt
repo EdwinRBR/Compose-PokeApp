@@ -33,7 +33,8 @@ import com.somecompose.composepokeapp.ui.theme.RobotoCondensed
 
 @Composable
 fun PokeListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokeListViewModel = hiltViewModel()
 ) {
     Surface(
         color = MaterialTheme.colors.background,
@@ -54,7 +55,7 @@ fun PokeListScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-
+                viewModel.searchPokeList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
             PokeList(navController = navController)
@@ -92,7 +93,7 @@ fun SearchBar(
                 .background(Color.White, CircleShape)
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
-                    isHintDisplayed = !it.hasFocus
+                    isHintDisplayed = !it.hasFocus && text.isEmpty()
                 }
                 .focusable()
         )
@@ -116,6 +117,7 @@ fun PokeList(
     val isLoading by remember { viewModel.isLoading }
     val loadError by remember { viewModel.loadError }
     val endReached by remember { viewModel.endReached }
+    val isSearching by remember { viewModel.isSearching }
 
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         val itemCount = if (pokeList.size % 2 == 0) {
@@ -124,7 +126,7 @@ fun PokeList(
             pokeList.size / 2 + 1
         }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReached && !isLoading) {
+            if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
                 viewModel.loadPokePaginated()
             }
             PokeRow(
@@ -164,7 +166,7 @@ fun PokeEntry(
             .shadow(5.dp, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .aspectRatio(1f)
-                //Need to fix it later
+            //Need to fix it later
             .background(MaterialTheme.colors.primary)
             .clickable {
                 navController.navigate(
