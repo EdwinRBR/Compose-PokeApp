@@ -35,20 +35,13 @@ class MainActivity : ComponentActivity() {
                         PokeListScreen(navController = navController)
                     }
                     composable(
-                        "poke_detail_screen/{dominantColor}/{pokeName}",
+                        "poke_detail_screen/{pokeName}",
                         arguments = listOf(
-                            navArgument("dominantColor") {
-                                type = NavType.IntType
-                            },
                             navArgument("pokeName") {
                                 type = NavType.StringType
                             }
                         )
                     ) {
-                        val dominantColor = remember {
-                            val color = it.arguments?.getInt("dominantColor")
-                            color?.let { Color(it) } ?: Color.White
-                        }
                         val pokeName = remember {
                             it.arguments?.getString("pokeName")
                         }

@@ -38,8 +38,7 @@ class PokeListViewModel @Inject constructor(
     fun loadPokePaginated() {
         viewModelScope.launch {
             isLoading.value = true
-            val result = repository.getPokeList(PAGE_SIZE, currentPage * PAGE_SIZE)
-            when(result) {
+            when(val result = repository.getPokeList(PAGE_SIZE, currentPage * PAGE_SIZE)) {
                 is Resource.Success -> {
                     endReached.value = currentPage * PAGE_SIZE >= result.data!!.count
                     // Only cause API doesn't provide image url
@@ -67,16 +66,6 @@ class PokeListViewModel @Inject constructor(
                     loadError.value = result.message!!
                     isLoading.value = false
                 }
-            }
-        }
-    }
-
-    fun calcDominantColor(drawable: Drawable, onFinish: (Color) -> Unit) {
-        val bitmap = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
-
-        Palette.from(bitmap).generate { palette ->
-            palette?.dominantSwatch?.rgb?.let { colorValue ->
-                onFinish(Color(colorValue))
             }
         }
     }

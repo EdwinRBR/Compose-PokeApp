@@ -142,7 +142,7 @@ fun PokeList(
     }
 
     Box(
-        contentAlignment =  Center,
+        contentAlignment = Center,
         modifier = Modifier.fillMaxSize()
     ) {
         if (isLoading) {
@@ -163,10 +163,6 @@ fun PokeEntry(
     modifier: Modifier = Modifier,
     viewModel: PokeListViewModel = hiltViewModel()
 ) {
-    val defaultDominantColor = MaterialTheme.colors.surface
-    var dominantColor by remember {
-        mutableStateOf(defaultDominantColor)
-    }
 
     Box(
         contentAlignment = Center,
@@ -174,17 +170,11 @@ fun PokeEntry(
             .shadow(5.dp, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .aspectRatio(1f)
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        dominantColor,
-                        defaultDominantColor
-                    )
-                )
-            )
+                //Need to fix it later
+            .background(MaterialTheme.colors.primary)
             .clickable {
                 navController.navigate(
-                    "poke_detail_screen/${dominantColor.toArgb()}/${entry.pokeName}"
+                    "poke_detail_screen/${entry.pokeName}"
                 )
             }
     ) {
@@ -197,10 +187,10 @@ fun PokeEntry(
                     builder = {
                         crossfade(true)
                         //Need to fix it
-                       /* CircularProgressIndicator(
-                            color = MaterialTheme.colors.primary,
-                            modifier = Modifier.scale(0.5f)
-                        ) */
+                        /* CircularProgressIndicator(
+                             color = MaterialTheme.colors.primary,
+                             modifier = Modifier.scale(0.5f)
+                         ) */
                     }
                 ),
                 contentDescription = entry.pokeName,
@@ -250,13 +240,13 @@ fun PokeRow(
 @Composable
 fun RetrySection(
     error: String,
-    onRetry : () -> Unit
+    onRetry: () -> Unit
 ) {
     Column {
         Text(error, color = Color.Red, fontSize = 18.sp)
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick =  { onRetry() },
+            onClick = { onRetry() },
             modifier = Modifier.align(CenterHorizontally)
         ) {
             Text(text = "Retry")
