@@ -4,14 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.toLowerCase
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import com.somecompose.composepokeapp.pokedetail.PokeDetailScreen
 import com.somecompose.composepokeapp.pokelist.PokeListScreen
 import com.somecompose.composepokeapp.ui.theme.ComposePokeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,6 +42,10 @@ class MainActivity : ComponentActivity() {
                         val pokeName = remember {
                             it.arguments?.getString("pokeName")
                         }
+                        PokeDetailScreen(
+                            pokeName = pokeName?.lowercase(Locale.ROOT) ?: "",
+                            navController = navController
+                        )
                     }
                 }
             }
