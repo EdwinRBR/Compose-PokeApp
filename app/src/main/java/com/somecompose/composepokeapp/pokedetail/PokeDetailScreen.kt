@@ -4,10 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -32,6 +29,8 @@ import coil.compose.rememberImagePainter
 import com.somecompose.composepokeapp.R
 import com.somecompose.composepokeapp.data.responses.Pokemon
 import com.somecompose.composepokeapp.data.responses.Type
+import com.somecompose.composepokeapp.ui.theme.DarkBlue
+import com.somecompose.composepokeapp.ui.theme.GreyBlue
 import com.somecompose.composepokeapp.util.Resource
 import com.somecompose.composepokeapp.util.parseTypeToColor
 import java.util.*
@@ -45,61 +44,68 @@ fun PokeDetailScreen(
     pokeImageSize: Dp = 200.dp,
     viewModel: PokeDetailViewModel = hiltViewModel()
 ) {
-    val pokeInfo = produceState<Resource<Pokemon>>(initialValue = Resource.Loading()) {
-        value = viewModel.getPokeInfo(pokeName)
-    }.value
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(bottom = 16.dp)
+    Surface(
+        color = GreyBlue
     ) {
-        PokeDetailTopSection(
-            navController = navController,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.2f)
-                .align(Alignment.TopCenter)
-            )
-        PokeDetailStateWrapper(
-            pokeInfo = pokeInfo,
+        val pokeInfo = produceState<Resource<Pokemon>>(initialValue = Resource.Loading()) {
+            value = viewModel.getPokeInfo(pokeName)
+        }.value
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = topPadding + pokeImageSize / 2f,
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 16.dp
-                )
-                .shadow(10.dp, RoundedCornerShape(10.dp))
-                .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colors.surface)
-                .padding(16.dp)
-                .align(Alignment.BottomCenter),
-            loadingModifier = Modifier
-                .size(100.dp)
-                .align(Alignment.Center)
-                .padding(
-                    top = topPadding + pokeImageSize / 2f,
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 16.dp
-                )
+                .padding(bottom = 16.dp)
+        ) {
+            PokeDetailTopSection(
+                navController = navController,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.2f)
+                    .align(Alignment.TopCenter)
             )
-        Box(contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-            .fillMaxSize()) {
-            if (pokeInfo is Resource.Success) {
-                pokeInfo.data?.sprites?.let {
-                    Image(
-                        painter = rememberImagePainter(
-                            data = it.front_default,
+            PokeDetailStateWrapper(
+                pokeInfo = pokeInfo,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = topPadding + pokeImageSize / 2f,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
+                    .shadow(10.dp, RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colors.surface)
+                    .padding(16.dp)
+                    .align(Alignment.BottomCenter),
+                loadingModifier = Modifier
+                    .size(100.dp)
+                    .align(Alignment.Center)
+                    .padding(
+                        top = topPadding + pokeImageSize / 2f,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
+            )
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                if (pokeInfo is Resource.Success) {
+                    pokeInfo.data?.sprites?.let {
+                        Image(
+                            painter = rememberImagePainter(
+                                data = it.front_default,
                                 builder = {
                                     crossfade(true)
                                 }
-                        ),
-                    contentDescription = pokeInfo.data.name,
-                    modifier = Modifier
-                        .size(pokeImageSize)
-                        .offset(y = topPadding))
+                            ),
+                            contentDescription = pokeInfo.data.name,
+                            modifier = Modifier
+                                .size(pokeImageSize)
+                                .offset(y = topPadding))
+                    }
                 }
             }
         }
@@ -117,8 +123,8 @@ fun PokeDetailTopSection(
             .background(
                 Brush.verticalGradient(
                     listOf(
-                        Color.Gray,
-                        Color.Transparent
+                        DarkBlue,
+                        GreyBlue
                     )
                 )
             )
@@ -144,7 +150,7 @@ fun PokeDetailStateWrapper(
     loadingModifier: Modifier = Modifier
 ) {
 
-    when(pokeInfo) {
+    when (pokeInfo) {
         is Resource.Success -> {
             PokeDetailSection(
                 pokeInfo = pokeInfo.data!!,
@@ -157,7 +163,7 @@ fun PokeDetailStateWrapper(
                 text = pokeInfo.message!!,
                 color = Color.Red,
                 modifier = modifier
-                )
+            )
         }
         is Resource.Loading -> {
             CircularProgressIndicator(
@@ -182,11 +188,13 @@ fun PokeDetailSection(
             .verticalScroll(scrollState)
     ) {
         Text(
-            text = "#${pokeInfo.id} ${pokeInfo.name.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            }}",
+            text = "#${pokeInfo.id} ${
+                pokeInfo.name.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.getDefault()
+                    ) else it.toString()
+                }
+            }",
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp,
             textAlign = TextAlign.Center,
@@ -195,7 +203,8 @@ fun PokeDetailSection(
         PokeTypeSection(types = pokeInfo.types)
         PokeDetailDataSection(
             pokeWeight = pokeInfo.weight,
-            pokeHeight = pokeInfo.height)
+            pokeHeight = pokeInfo.height
+        )
     }
 }
 
@@ -246,7 +255,7 @@ fun PokeDetailDataSection(
     val pokeHeightToMeters = remember {
         round(pokeHeight * 100f / 1000f)
     }
-    
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

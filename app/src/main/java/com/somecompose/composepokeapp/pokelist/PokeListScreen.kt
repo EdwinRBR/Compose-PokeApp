@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -29,7 +30,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.somecompose.composepokeapp.R
 import com.somecompose.composepokeapp.data.models.PokeListEntry
-import com.somecompose.composepokeapp.ui.theme.RobotoCondensed
+import com.somecompose.composepokeapp.ui.theme.*
 
 @Composable
 fun PokeListScreen(
@@ -37,17 +38,22 @@ fun PokeListScreen(
     viewModel: PokeListViewModel = hiltViewModel()
 ) {
     Surface(
-        color = MaterialTheme.colors.background,
+        color = MaterialTheme.colors.primary,
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                painter = painterResource(id = R.drawable.ic_international_pokemon_logo),
                 contentDescription = "Pokemon",
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(CenterHorizontally)
+            )
+            Spacer(
+                modifier = Modifier.height(30.dp)
             )
             SearchBar(
                 hint = "Search...",
@@ -57,8 +63,12 @@ fun PokeListScreen(
             ) {
                 viewModel.searchPokeList(it)
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            PokeList(navController = navController)
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+            PokeList(
+                navController = navController
+            )
         }
 
     }
@@ -77,7 +87,9 @@ fun SearchBar(
         mutableStateOf(hint != "")
     }
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier
+    ) {
         BasicTextField(
             value = text,
             onValueChange = {
@@ -119,7 +131,9 @@ fun PokeList(
     val endReached by remember { viewModel.endReached }
     val isSearching by remember { viewModel.isSearching }
 
-    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp)
+    ) {
         val itemCount = if (pokeList.size % 2 == 0) {
             pokeList.size / 2
         } else {
@@ -142,7 +156,7 @@ fun PokeList(
         modifier = Modifier.fillMaxSize()
     ) {
         if (isLoading) {
-            CircularProgressIndicator(color = MaterialTheme.colors.primary)
+            CircularProgressIndicator(color = MaterialTheme.colors.surface)
         }
         if (loadError.isNotEmpty()) {
             RetrySection(error = loadError) {
@@ -167,7 +181,14 @@ fun PokeEntry(
             .clip(RoundedCornerShape(10.dp))
             .aspectRatio(1f)
             //Need to fix it later
-            .background(MaterialTheme.colors.primary)
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        GreyBlue,
+                        lightBlueB
+                    )
+                )
+            )
             .clickable {
                 navController.navigate(
                     "poke_detail_screen/${entry.pokeName}"
