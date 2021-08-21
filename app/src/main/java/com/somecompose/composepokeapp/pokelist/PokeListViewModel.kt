@@ -1,14 +1,8 @@
 package com.somecompose.composepokeapp.pokelist
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.palette.graphics.Palette
 import com.somecompose.composepokeapp.data.models.PokeListEntry
 import com.somecompose.composepokeapp.repository.PokeRepository
 import com.somecompose.composepokeapp.util.Constants.PAGE_SIZE
