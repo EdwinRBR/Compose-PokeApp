@@ -10,6 +10,7 @@ class PokeApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // Init Timber
         Timber.plant(Timber.DebugTree())
     }
 }

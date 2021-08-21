@@ -10,7 +10,8 @@ import kotlin.Exception
 
 @ActivityScoped
 class PokeRepository @Inject constructor(
-    private val api: PokeApi) {
+    private val api: PokeApi
+    ) {
 
     suspend fun getPokeList(limit: Int, offset: Int) : Resource<PokeList> {
         val response = try {

@@ -130,7 +130,7 @@ fun PokeList(
             pokeList.size / 2 + 1
         }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReached) {
+            if (it >= itemCount - 1 && !endReached && !isLoading) {
                 viewModel.loadPokePaginated()
             }
             PokeRow(
