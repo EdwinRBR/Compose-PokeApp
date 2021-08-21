@@ -1,9 +1,8 @@
 package com.somecompose.composepokeapp.pokedetail
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -13,19 +12,30 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.somecompose.composepokeapp.R
 import com.somecompose.composepokeapp.data.responses.Pokemon
+import com.somecompose.composepokeapp.data.responses.Type
 import com.somecompose.composepokeapp.util.Resource
+import com.somecompose.composepokeapp.util.parseTypeToColor
+import java.util.*
+import kotlin.math.round
 
 @Composable
 fun PokeDetailScreen(
@@ -101,7 +111,6 @@ fun PokeDetailTopSection(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-
     Box(
         contentAlignment = Alignment.TopStart,
         modifier = modifier
@@ -137,7 +146,11 @@ fun PokeDetailStateWrapper(
 
     when(pokeInfo) {
         is Resource.Success -> {
-
+            PokeDetailSection(
+                pokeInfo = pokeInfo.data!!,
+                modifier = modifier
+                    .offset(y = (-20).dp)
+            )
         }
         is Resource.Error -> {
             Text(
@@ -152,5 +165,137 @@ fun PokeDetailStateWrapper(
                 modifier = loadingModifier
             )
         }
+    }
+}
+
+@Composable
+fun PokeDetailSection(
+    pokeInfo: Pokemon,
+    modifier: Modifier = Modifier
+) {
+    val scrollState = rememberScrollState()
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxSize()
+            .offset(y = 100.dp)
+            .verticalScroll(scrollState)
+    ) {
+        Text(
+            text = "#${pokeInfo.id} ${pokeInfo.name.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }}",
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.onSurface
+        )
+        PokeTypeSection(types = pokeInfo.types)
+        PokeDetailDataSection(
+            pokeWeight = pokeInfo.weight,
+            pokeHeight = pokeInfo.height)
+    }
+}
+
+@Composable
+fun PokeTypeSection(
+    types: List<Type>
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(16.dp)
+    ) {
+        for (type in types) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
+                    .clip(CircleShape)
+                    .background(parseTypeToColor(type))
+                    .height(35.dp)
+            ) {
+                Text(
+                    text = type.type.name.replaceFirstChar {
+                        if (it.isLowerCase()) {
+                            it.titlecase(
+                                Locale.getDefault()
+                            )
+                        } else it.toString()
+                    },
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PokeDetailDataSection(
+    pokeWeight: Int,
+    pokeHeight: Int,
+    sectionHeight: Dp = 80.dp
+) {
+    val pokeWeightToKg = remember {
+        round(pokeWeight * 100f / 1000f)
+    }
+    val pokeHeightToMeters = remember {
+        round(pokeHeight * 100f / 1000f)
+    }
+    
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        PokeDetailDataItem(
+            dataValue = pokeWeightToKg,
+            dataUnit = "kg",
+            dataIcon = painterResource(id = R.drawable.ic_launcher_foreground),
+            modifier = Modifier
+                .weight(1f)
+        )
+        Spacer(
+            modifier = Modifier
+                .size(1.dp, sectionHeight)
+                .background(Color.LightGray)
+        )
+        PokeDetailDataItem(
+            dataValue = pokeHeightToMeters,
+            dataUnit = "m",
+            dataIcon = painterResource(id = R.drawable.ic_launcher_foreground),
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+fun PokeDetailDataItem(
+    dataValue: Float,
+    dataUnit: String,
+    dataIcon: Painter,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+    ) {
+        Icon(
+            painter = dataIcon,
+            contentDescription = null,
+            tint = MaterialTheme.colors.onSurface
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+        Text(
+            text = "$dataValue$dataUnit",
+            color = MaterialTheme.colors.onSurface
+        )
     }
 }
