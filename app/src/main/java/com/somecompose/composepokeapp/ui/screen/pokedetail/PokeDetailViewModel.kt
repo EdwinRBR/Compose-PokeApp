@@ -1,4 +1,4 @@
-package com.somecompose.composepokeapp.pokedetail
+package com.somecompose.composepokeapp.ui.screen.pokedetail
 
 import androidx.lifecycle.ViewModel
 import com.somecompose.composepokeapp.data.responses.Pokemon

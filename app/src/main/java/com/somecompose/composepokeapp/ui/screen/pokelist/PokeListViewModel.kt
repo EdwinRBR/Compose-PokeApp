@@ -1,4 +1,4 @@
-package com.somecompose.composepokeapp.pokelist
+package com.somecompose.composepokeapp.ui.screen.pokelist
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

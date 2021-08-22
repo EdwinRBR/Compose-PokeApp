@@ -8,7 +8,7 @@ val GreyBlue = Color(0xFF22375F)
 val DarkBlue = Color(0xFF09214D)
 val lightBlueB = Color(0xFF536482)
 
-val HPColor = Color(0xFFF5FF00)
+val HPColor = Color(0xFFF7D02C)
 val AtkColor = Color(1f, 0f, 0f, 0.66f)
 val DefColor = Color(0f, 0f, 1f, 0.44f)
 val SpAtkColor = Color(0.671f, 0f, 1f, 0.57f)

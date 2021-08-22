@@ -1,4 +1,4 @@
-package com.somecompose.composepokeapp.pokelist
+package com.somecompose.composepokeapp.ui.screen.pokelist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -141,7 +141,9 @@ fun PokeList(
         }
         items(itemCount) {
             if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
-                viewModel.loadPokePaginated()
+                LaunchedEffect(key1 = true) {
+                    viewModel.loadPokePaginated()
+                }
             }
             PokeRow(
                 rowIndex = it,

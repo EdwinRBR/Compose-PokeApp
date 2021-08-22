@@ -1,4 +1,4 @@
-package com.somecompose.composepokeapp.pokedetail
+package com.somecompose.composepokeapp.ui.screen.pokedetail
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -266,6 +266,7 @@ fun PokeDetailDataSection(
         PokeDetailDataItem(
             dataValue = pokeWeightToKg,
             dataUnit = "kg",
+            // Need to find proper icon
             dataIcon = painterResource(id = R.drawable.ic_launcher_foreground),
             modifier = Modifier
                 .weight(1f)
@@ -278,6 +279,7 @@ fun PokeDetailDataSection(
         PokeDetailDataItem(
             dataValue = pokeHeightToMeters,
             dataUnit = "m",
+            // Need to find proper icon
             dataIcon = painterResource(id = R.drawable.ic_launcher_foreground),
             modifier = Modifier
                 .weight(1f)
